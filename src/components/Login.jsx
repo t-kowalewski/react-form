@@ -1,13 +1,26 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Login() {
   const emailRef = useRef(null);
   const passRef = useRef(null);
 
+  const [submitError, setSubmitError] = useState({
+    email: false,
+    password: false,
+  });
+
   const submitHandler = (e) => {
     e.preventDefault();
     console.log('Submitted!');
-    console.log(emailRef.current.value, passRef.current.value);
+    const email = emailRef.current.value;
+    // const pass = passRef.current.value;
+
+    const emailIsInvalid = !email.includes('@');
+    if (emailIsInvalid) {
+      setSubmitError((prevState) => ({ ...prevState, email: true }));
+      return;
+    }
+    setSubmitError((prevState) => ({ ...prevState, email: false }));
   };
 
   return (
@@ -18,6 +31,12 @@ export default function Login() {
         <div className='control no-margin'>
           <label htmlFor='email'>Email</label>
           <input id='email' type='email' name='email' ref={emailRef} />
+
+          {submitError.email && (
+            <div className='control-error'>
+              <p>Please provide valid email</p>
+            </div>
+          )}
         </div>
 
         <div className='control no-margin'>
@@ -27,7 +46,7 @@ export default function Login() {
       </div>
 
       <p className='form-actions'>
-        <button className='button button-flat' type='button'>
+        <button className='button button-flat' type='reset'>
           Reset
         </button>
 
