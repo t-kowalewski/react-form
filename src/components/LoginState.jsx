@@ -6,11 +6,36 @@ export default function Login() {
     password: '',
   });
 
+  const [didEdit, setDidEdit] = useState({
+    email: false,
+    password: false,
+  });
+
+  // validation - computed value based on state
+  const emailIsInvalid = didEdit.email && !userInp.email.includes('@');
+
   const inputChangeHandler = (field, value) => {
     setUserInp((prevState) => {
       return {
         ...prevState,
         [field]: value,
+      };
+    });
+
+    setDidEdit((prevState) => {
+      return {
+        ...prevState,
+        [field]: false,
+      };
+    });
+  };
+
+  const loseFocusHandler = (field) => {
+    // console.log('fired');
+    setDidEdit((prevState) => {
+      return {
+        ...prevState,
+        [field]: true,
       };
     });
   };
@@ -33,10 +58,17 @@ export default function Login() {
             type='email'
             name='email'
             value={userInp.email}
+            onBlur={() => loseFocusHandler('email')}
             onChange={(e) => {
               inputChangeHandler('email', e.target.value);
             }}
           />
+
+          {emailIsInvalid && (
+            <div className='control-error'>
+              <p>Please provide valid email</p>
+            </div>
+          )}
         </div>
 
         <div className='control no-margin'>
