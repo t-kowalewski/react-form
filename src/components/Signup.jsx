@@ -2,15 +2,14 @@ import { useRef, useState } from 'react';
 
 export default function Signup() {
   const passRef = useRef(null);
-  const [confPass, setConfPass] = useState('');
+  const confPassRef = useRef(null);
   const [confPassDidEdit, setConfPassDidEdit] = useState(false);
 
   // validation - computed value based on state
   const confPassIsInvalid =
-    confPassDidEdit && passRef.current.value !== confPass;
+    confPassDidEdit && passRef.current.value !== confPassRef.current.value;
 
-  const confPassChangeHandler = (e) => {
-    setConfPass(e.target.value);
+  const passChangeHandler = () => {
     setConfPassDidEdit(false);
   };
 
@@ -27,7 +26,6 @@ export default function Signup() {
     data.acquisition = acquisition;
     console.log(data);
 
-    // setConfPass('');
     // e.target.reset();
   };
 
@@ -49,6 +47,7 @@ export default function Signup() {
             type='password'
             name='password'
             ref={passRef}
+            onChange={passChangeHandler}
             required
             minLength={6}
           />
@@ -60,8 +59,8 @@ export default function Signup() {
             id='confirm-password'
             type='password'
             name='confirm-password'
-            value={confPass}
-            onChange={confPassChangeHandler}
+            ref={confPassRef}
+            onChange={passChangeHandler}
             onBlur={confPassLoseFocusHandler}
             required
             minLength={6}
