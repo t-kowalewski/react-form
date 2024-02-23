@@ -1,4 +1,23 @@
+import { useRef, useState } from 'react';
+
 export default function Signup() {
+  const passRef = useRef(null);
+  const [confPass, setConfPass] = useState('');
+  const [confPassDidEdit, setConfPassDidEdit] = useState(false);
+
+  // validation - computed value based on state
+  const confPassIsInvalid =
+    confPassDidEdit && passRef.current.value !== confPass;
+
+  const confPassChangeHandler = (e) => {
+    setConfPass(e.target.value);
+    setConfPassDidEdit(false);
+  };
+
+  const confPassLoseFocusHandler = () => {
+    setConfPassDidEdit(true);
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -8,7 +27,8 @@ export default function Signup() {
     data.acquisition = acquisition;
     console.log(data);
 
-    e.target.reset();
+    // setConfPass('');
+    // e.target.reset();
   };
 
   return (
@@ -28,6 +48,7 @@ export default function Signup() {
             id='password'
             type='password'
             name='password'
+            ref={passRef}
             required
             minLength={6}
           />
@@ -39,9 +60,18 @@ export default function Signup() {
             id='confirm-password'
             type='password'
             name='confirm-password'
+            value={confPass}
+            onChange={confPassChangeHandler}
+            onBlur={confPassLoseFocusHandler}
             required
             minLength={6}
           />
+
+          {confPassIsInvalid && (
+            <div className='control-error'>
+              <p>{"Confirmed password doesn't match"}</p>
+            </div>
+          )}
         </div>
       </div>
 
