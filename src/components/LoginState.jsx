@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import Input from './Input.jsx';
+
 export default function Login() {
   const [userInp, setUserInp] = useState({
     email: '',
@@ -13,6 +15,7 @@ export default function Login() {
 
   // validation - computed value based on state
   const emailIsInvalid = didEdit.email && !userInp.email.includes('@');
+  const passIsInvalid = didEdit.password && userInp.password.trim().length < 6;
 
   const inputChangeHandler = (field, value) => {
     setUserInp((prevState) => {
@@ -43,7 +46,7 @@ export default function Login() {
   const submitHandler = (e) => {
     e.preventDefault();
     console.log('Submitted!');
-    // console.log(userInp);
+    console.log(userInp);
   };
 
   return (
@@ -51,38 +54,31 @@ export default function Login() {
       <h2>Login</h2>
 
       <div className='control-row'>
-        <div className='control no-margin'>
-          <label htmlFor='email'>Email</label>
-          <input
-            id='email'
-            type='email'
-            name='email'
-            value={userInp.email}
-            onBlur={() => loseFocusHandler('email')}
-            onChange={(e) => {
-              inputChangeHandler('email', e.target.value);
-            }}
-          />
+        <Input
+          id='email'
+          label='Email'
+          type='email'
+          name='email'
+          value={userInp.email}
+          onChange={(e) => {
+            inputChangeHandler('email', e.target.value);
+          }}
+          onBlur={() => loseFocusHandler('email')}
+          error={emailIsInvalid && 'Please provide valid email'}
+        />
 
-          {emailIsInvalid && (
-            <div className='control-error'>
-              <p>Please provide valid email</p>
-            </div>
-          )}
-        </div>
-
-        <div className='control no-margin'>
-          <label htmlFor='password'>Password</label>
-          <input
-            id='password'
-            type='password'
-            name='password'
-            value={userInp.password}
-            onChange={(e) => {
-              inputChangeHandler('password', e.target.value);
-            }}
-          />
-        </div>
+        <Input
+          id='password'
+          label='Password'
+          type='password'
+          name='password'
+          value={userInp.password}
+          onChange={(e) => {
+            inputChangeHandler('password', e.target.value);
+          }}
+          onBlur={() => loseFocusHandler('password')}
+          error={passIsInvalid && 'Password should be at least 6 characters'}
+        />
       </div>
 
       <p className='form-actions'>
